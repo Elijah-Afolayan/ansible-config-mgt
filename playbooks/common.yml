@@ -12,12 +12,12 @@
 
     - name: Create a Directory and a file inside the 
       file:
-       path: {{item}}
+       path: "{{item}}""
        user: remote_user
        group: remote_user
        state: directory
       with_item:
-       - /home/ubuntu/ansible-config-mgt/some_Directory1/some_file1
+       - /home/remote_user/some_Directory1/some_file1
 
     - name: Update Timezone to Etc/UTC
       copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
@@ -41,12 +41,12 @@
 
     - name: Create a Directory and a file inside the 
       file:
-        path: {{item}}
+        path: "{{item}}"
         user: remote_user
         group: remote_user
         state: directory
       with_item:
-        - /home/ubuntu/ansible-config-mgt/some_Directory1/some_file1
+        - /home/remote_user/some_Directory1/some_file1
 
     - name: Update Timezone to Etc/UTC
       copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
