@@ -1,3 +1,4 @@
+# Details of all infastructures 
 [nfs]
 172.31.95.65 ansible_ssh_user='ec2-user'
 
