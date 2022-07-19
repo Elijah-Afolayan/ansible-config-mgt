@@ -17,7 +17,6 @@
         state:
         - directory
         recurse: yes
-      file:
         path:
         - /etc/some_Directory1/somefile
         state:
@@ -25,10 +24,15 @@
         recurse: yes
    
     - name: Update Timezone to Etc/UTC
-      copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
-      sudo: true
-      register: timezone
-  
+      copy: 
+        content: "Etc/UTC\n" 
+        dest: /etc/timezone
+        owner: root
+        group: root
+        mode: 0644
+        sudo: true
+        register: timezone
+
 - name: update LB server
   hosts: lb
   remote_user: ubuntu
@@ -53,7 +57,6 @@
         state:
         - directory
         recurse: yes
-      file:
         path:
         - /etc/some_Directory1/somefile
         state:
@@ -61,6 +64,11 @@
         recurse: yes
 
     - name: Update Timezone to Etc/UTC
-      copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
-      sudo: true
-      register: timezone
+      copy: 
+        content: "Etc/UTC\n" 
+        dest: /etc/timezone
+        owner: root
+        group: root
+        mode: 0644
+        sudo: true
+        register: timezone
