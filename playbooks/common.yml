@@ -7,18 +7,23 @@
   tasks:
     - name: ensure wireshark is at the latest version
       yum:
-        nasswireshark
-        stss latest
+        name: wireshark
+        state: latest
 
     - name: Create a Directory and a file inside the 
       file:
-       path: "{{item}}""
-       user: remote_user
-       group: remote_user
-       state: directory
-      with_item:
-       - /home/remote_user/some_Directory1/some_file1
-
+        path:
+        - /etc/some_Directory1/
+        state:
+        - directory
+        recurse: yes
+      file:
+        path:
+        - /etc/some_Directory1/somefile
+        state:
+        - file
+        recurse: yes
+   
     - name: Update Timezone to Etc/UTC
       copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
       sudo: true
@@ -33,6 +38,8 @@
     - name: Update apt repo
       apt: 
         update_cache: yes
+        name: '*'
+        state: latest
 
     - name: ensure wireshark is at the latest version
       apt:
@@ -41,12 +48,17 @@
 
     - name: Create a Directory and a file inside the 
       file:
-        path: "{{item}}"
-        user: remote_user
-        group: remote_user
-        state: directory
-      with_item:
-        - /home/remote_user/some_Directory1/some_file1
+        path:
+        - /etc/some_Directory1/
+        state:
+        - directory
+        recurse: yes
+      file:
+        path:
+        - /etc/some_Directory1/somefile
+        state:
+        - file
+        recurse: yes
 
     - name: Update Timezone to Etc/UTC
       copy: content="Etc/UTC\n" dest=/etc/timezone owner=root group=root mode=0644
