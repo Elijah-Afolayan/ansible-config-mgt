@@ -9,10 +9,22 @@
       yum:
         update_cache: yes
         state: latest
+        
     - name: ensure wireshark is at the latest version
       yum:
         name: wireshark
         state: latest
+
+   - name: create a directory
+     file:
+       path: /etc/some_directory
+       state: directory
+       recurse: yes
+
+   - name: create a file 
+     file:
+       path: /etc/some_directory/some_file
+       state: directory
 
 - name: update LB server
   hosts: lb
@@ -28,3 +40,15 @@
       apt:
         name: wireshark
         state: latest
+
+    - name: create a directory
+      file:
+        path: /etc/some_directory
+        state: directory
+        recurse: yes
+
+    - name: create a file 
+      file:
+        path: /etc/some_directory/some_file
+        state: directory
+        
