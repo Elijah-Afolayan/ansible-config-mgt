@@ -7,7 +7,8 @@
   tasks:
     - name: Update WEB, NFS and DB server
       yum:
-        update_cache: latest
+        update_cache: yes
+        state: latest
     - name: ensure wireshark is at the latest version
       yum:
         name: wireshark
