@@ -21,7 +21,7 @@
         - /etc/some_Directory1/somefile
         state:
         - file
-        recurse: yes
+
    
     - name: Update Timezone to Etc/UTC
       copy: 
@@ -61,7 +61,7 @@
         - /etc/some_Directory1/somefile
         state:
         - file
-        recurse: yes
+        
 
     - name: Update Timezone to Etc/UTC
       copy: 
