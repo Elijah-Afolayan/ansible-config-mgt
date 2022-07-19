@@ -1,4 +1,4 @@
-# Details of all infastructures 
+
 [nfs]
 172.31.95.65 ansible_ssh_user='ec2-user'
 
@@ -11,4 +11,3 @@
 
 [lb]
 172.31.87.14 ansible_ssh_user='ubuntu'
-#thats the end of the file 
