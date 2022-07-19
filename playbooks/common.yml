@@ -5,24 +5,13 @@
   become: yes
   become_user: root
   tasks:
+    - name: Update WEB, NFS and DB server
+      yum:
+        update_cache: latest
     - name: ensure wireshark is at the latest version
       yum:
         name: wireshark
         state: latest
-
-    - name: Create a Directory and a file inside the 
-      file:
-        path:
-        - /etc/some_Directory1/
-        state:
-        - directory
-        recurse: yes
-        path:
-        - /etc/some_Directory1/somefile
-        state:
-        - file
-
-   
 
 - name: update LB server
   hosts: lb
@@ -38,19 +27,3 @@
       apt:
         name: wireshark
         state: latest
-
-    - name: Create a Directory and a file inside the 
-      file:
-        path:
-        - /etc/some_Directory1/
-        state:
-        - directory
-        recurse: yes
-        path:
-        - /etc/some_Directory1/somefile
-        state:
-        - file
-
-
-
-
