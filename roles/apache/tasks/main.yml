@@ -1,0 +1,107 @@
+---
+- name: 'Check input'
+  ansible.builtin.assert:
+    that:
+      - apache_kerberos in apache_supported_kerberos
+
+- name: 'Include OS specific vars'
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+  no_log: true
+
+- name: 'Install packages'
+  ansible.builtin.package:
+    name: "{{ apache_revproxy_packages }}"
+
+- block:
+    - name: 'Remove default directories (RedHat)'
+      ansible.builtin.file:
+        path: '/etc/httpd/conf.d'
+        state: 'absent'
+      when: not apache_certbot
+
+    - name: 'Symlink httpd.conf'
+      ansible.builtin.file:
+        src: '/etc/httpd/httpd.conf'
+        dest: '/etc/httpd/conf/httpd.conf'
+        state: 'link'
+        force: true
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: 'Ensure directories'
+  ansible.builtin.file:
+    path: '{{ apache_revproxy_basedir }}/sites-enabled'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: 0755
+
+- name: 'Ensure base config files'
+  ansible.builtin.template:
+    src: "{{ file }}.j2"
+    dest: "{{ apache_revproxy_basedir }}/{{ file }}"
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  loop:
+    - "{{ apache_revproxy_main_config }}"
+  loop_control:
+    loop_var: 'file'
+  notify: 'reload apache'
+
+- name: 'Ensure service'
+  ansible.builtin.service:
+    name: "{{ apache_revproxy_service_name }}"
+    state: 'started'
+    enabled: true
+
+- name: 'Ensure Kerberos credentials'
+  ansible.builtin.include_tasks: "krb_{{ apache_kerberos }}.yml"
+  when: apache_kerberos != 'none'
+
+- name: 'Install app config file'
+  ansible.builtin.template:
+    src: "{{ app['type'] }}.conf.j2"
+    dest: "{{ apache_revproxy_basedir }}/sites-enabled/{{ app['name'] }}.conf"
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  loop: "{{ apache_apps | default([]) }}"
+  loop_control:
+    loop_var: 'app'
+  notify: 'reload apache'
+  when: app['state'] == 'present'
+
+- name: 'Ensure PAM service files for HBAC enabled apps'
+  ansible.builtin.template:
+    src: 'pam.j2'
+    dest: "/etc/pam.d/{{ app['hbac_service'] }}"
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  loop: "{{ apache_apps | default([]) }}"
+  loop_control:
+    loop_var: 'app'
+  when: app['hbac_service'] is defined
+
+- name: 'Ensure Apache module enabled'
+  ansible.builtin.copy:
+    content: |
+      # This file is managed by Ansible, YOUR CHANGES WILL BE LOST
+      LoadModule authnz_pam_module modules/mod_authnz_pam.so
+    dest: '/etc/httpd/conf.modules.d/55-authnz_pam.conf'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+
+- name: 'Remove app config file'
+  ansible.builtin.file:
+    path: "{{ apache_revproxy_basedir }}/sites-enabled/{{ app['name'] }}.conf"
+    state: 'absent'
+  loop: "{{ apache_apps | default([]) }}"
+  loop_control:
+    loop_var: 'app'
+  notify: 'reload apache'
+  when: app['state'] == 'absent'
+
+- name: 'Include OS specific tasks'
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"

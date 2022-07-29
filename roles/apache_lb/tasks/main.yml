@@ -1,0 +1,26 @@
+---
+# tasks file for apache_lb
+
+  - name: Update and upgrade Repositories and system
+    become: yes
+    become_method: sudo
+    apt:
+      update_cache: yes
+      upgrade: dist
+
+  - name: Installing apache2 and dependencies
+    package:
+      name: "{{ package_lb }}"
+      state: present
+    
+  - name: Enable load balancer modules
+    apache2_module:
+      state: present
+      name: "{{ ap2_module_name_list }}"
+      
+
+  - name: Restart apache2 service
+    service:
+      name: apache2
+      status: restarted
+
