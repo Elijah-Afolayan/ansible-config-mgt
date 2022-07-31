@@ -29,6 +29,16 @@
 
 # Vhost configuration.
 - import_tasks: vhosts.yml
+# set web server host name in /etc/hosts
+- name: Add mappings(webserver) to /etc/hosts
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ item.ip }} {{ item.name }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  loop:
+    - { name: web1, ip: 72.31.95.160 }
+    - { name: web2, ip: 72.31.85.8 }
 
 # Nginx setup.
 - name: Copy nginx configuration in place.
