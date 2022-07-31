@@ -1,5 +1,0 @@
----
-- name: 'reload apache'
-  service:
-    name: "{{ apache_revproxy_service_name }}"
-    state: 'reloaded'
