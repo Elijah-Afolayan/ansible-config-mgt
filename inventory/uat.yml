@@ -1,8 +1,8 @@
-# [all]
 
-# [uat-webservers]
-# 172.31.87.170 ansible_ssh_user='ec2-user'
-# 172.31.93.99 ansible_ssh_user='ec2-user'
-# 
+
+[uat-webservers]
+web1 172.31.87.170 ansible_ssh_user='ec2-user'
+web2 172.31.93.99 ansible_ssh_user='ec2-user'
+
 [lb]
 172.31.28.232 ansible_ssh_user='ubuntu'
