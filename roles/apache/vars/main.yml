@@ -1,4 +1,0 @@
----
-apache_supported_kerberos:
-  - 'none'
-  - 'ipa'
